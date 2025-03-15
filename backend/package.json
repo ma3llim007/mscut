@@ -5,6 +5,10 @@
     "author": "mohd sameer <mohdsameer68257@gmail.com>",
     "license": "MIT",
     "type": "module",
+    "scripts": {
+        "dev": "nodemon src/index.js",
+        "start": "node src/index.js"
+    },
     "dependencies": {
         "cors": "^2.8.5",
         "dotenv": "^16.4.7",
