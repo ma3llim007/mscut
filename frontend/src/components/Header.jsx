@@ -7,7 +7,7 @@ import { LinkIcon, LogOut } from "lucide-react";
 
 const Header = () => {
     const navigate = useNavigate();
-    const user = true;
+    const user = false;
 
     return (
         <nav className="py-4 flex justify-between items-center">
@@ -21,7 +21,7 @@ const Header = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger className="outline-0 overflow-hidden">
                             <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" />
+                                <AvatarImage src="https://avatars.githubusercontent.com/u/124599?v=4" />
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
