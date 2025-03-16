@@ -60,7 +60,7 @@ const Login = () => {
                             type="email"
                             disabled={isPending}
                             placeholder="Email Address"
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.email?.message ? <ErrorMessage error={errors?.email?.message} /> : null}
                     </div>
@@ -70,7 +70,7 @@ const Login = () => {
                             type="password"
                             placeholder="Password"
                             disabled={isPending}
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.password?.message ? <ErrorMessage error={errors?.password?.message} /> : null}
                     </div>
