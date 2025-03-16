@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import { ApiError, ApiResponse, asyncHandler } from "../utils/api.utils.js";
 import { HttpOptions } from "../utils/utils.js";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -141,4 +142,21 @@ const changePassword = asyncHandler(async (req, res) => {
     }
 });
 
-export { generateAccessAndRefreshTokens, register, login, logoutUser, changePassword };
+const verifyToken = (token, secret) => {
+    return new Promise((resolve, reject) => jwt.verify(token, secret, (err, decoded) => (err ? reject(err) : resolve(decoded))));
+};
+
+// Check session
+const checkSession = asyncHandler(async (req, res) => {
+    const accessToken = req.cookies.accessToken;
+    if (!accessToken) {
+        return res.status(401).json(new ApiError(401, "Access Token Is Required"));
+    }
+    try {
+        const user = await verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        return res.status(200).json(new ApiResponse(200, { isAuthenticated: true, user }, "User AccessToken Verified Successfully"));
+    } catch (_error) {
+        return res.status(403).json(new ApiError(403, "Access Token Is Not Valid"));
+    }
+});
+export { generateAccessAndRefreshTokens, register, login, logoutUser, changePassword, checkSession };
