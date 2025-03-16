@@ -9,8 +9,12 @@ import { loginValidationSchema } from "@/validation/auth.validation";
 import { useMutation } from "@tanstack/react-query";
 import crudService from "@/api/crudService";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useContext } from "react";
+import UrlContext from "@/context/UrlContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
+    const { userLogin } = useContext(UrlContext);
     const {
         register,
         handleSubmit,
@@ -31,9 +35,12 @@ const Login = () => {
             resetField("password");
         },
         onSuccess: (data) => {
+            userLogin(data?.data);
             navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+            toast.success(data?.message || "Login Successfully");
         },
     });
+
     return (
         <Card className="w-full max-w-md shadow-lg rounded-lg text-white">
             <CardHeader className="text-center">
