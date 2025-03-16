@@ -44,7 +44,7 @@ const register = asyncHandler(async (req, res) => {
         const registerUser = user.toObject();
         delete registerUser.password;
 
-        return res.status(201).json(new ApiResponse(201, registerUser, "User Register Successfully, Please Check Your Email For Verification"));
+        return res.status(201).json(new ApiResponse(201, registerUser, "User Register Successfully"));
     } catch (error) {
         return res.status(500).json(new ApiError(500, error.message || "Internal Server Error"));
     }
