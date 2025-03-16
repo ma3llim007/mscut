@@ -42,7 +42,6 @@ const Signup = () => {
             return () => clearTimeout(timer);
         }
     }, [message]);
-
     return (
         <Card className="w-full max-w-md shadow-lg rounded-lg text-white">
             <CardHeader className="text-center">
@@ -56,8 +55,8 @@ const Signup = () => {
                     </div>
                 )}
                 {message && (
-                    <div className="w-full my-4 bg-green-600 text-center rounded-md border-2 border-green-800 py-3 px-4">
-                        <p className="text-white font-bold text-lg">{message}</p>
+                    <div className="w-full my-2 bg-green-600 text-center rounded-md border-2 border-green-800 py-2 px-4">
+                        <p className="text-white font-bold text-base">{message}</p>
                     </div>
                 )}
                 <form onSubmit={handleSubmit(mutate)} className="w-full space-y-3">
@@ -67,7 +66,7 @@ const Signup = () => {
                             type="text"
                             disabled={isPending}
                             placeholder="First Name"
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.firstName?.message ? <ErrorMessage error={errors?.firstName?.message} /> : null}
                     </div>
@@ -77,7 +76,7 @@ const Signup = () => {
                             type="text"
                             disabled={isPending}
                             placeholder="Last Name"
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.lastName?.message ? <ErrorMessage error={errors?.lastName?.message} /> : null}
                     </div>
@@ -87,7 +86,7 @@ const Signup = () => {
                             type="email"
                             disabled={isPending}
                             placeholder="Email Address"
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.email?.message ? <ErrorMessage error={errors?.email?.message} /> : null}
                     </div>
@@ -97,7 +96,7 @@ const Signup = () => {
                             type="password"
                             placeholder="Password"
                             disabled={isPending}
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.password?.message ? <ErrorMessage error={errors?.password?.message} /> : null}
                     </div>
@@ -107,7 +106,7 @@ const Signup = () => {
                             type="password"
                             placeholder="Confirm Password"
                             disabled={isPending}
-                            className="!text-lg rounded p-5 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                            className="!text-lg rounded py-5 px-2 border mb-1 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
                         {errors?.confirmPassword?.message ? <ErrorMessage error={errors?.confirmPassword?.message} /> : null}
                     </div>
