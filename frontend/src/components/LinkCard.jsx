@@ -3,8 +3,9 @@ import { Button } from "./ui/button";
 import { Check, Copy, Download, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { BeatLoader } from "react-spinners";
 
-const LinkCard = ({ url }) => {
+const LinkCard = ({ url, fun, isPending }) => {
     const [copied, setCopied] = useState(false);
 
     const downloadImage = () => {
@@ -31,6 +32,7 @@ const LinkCard = ({ url }) => {
             toast.error("Failed to copy!");
         }
     };
+
     return (
         <div className="flex flex-col md:flex-row gap-5 border p-4 bg-gray-900 rounded-lg">
             <img className="h-32 object-contain ring ring-blue-600 self-start" src={url?.qrCode} alt="Qr Code" />
@@ -41,14 +43,14 @@ const LinkCard = ({ url }) => {
                 <span className="flex items-end font-extralight text-sm flex-1">{new Date(url.createdAt).toLocaleString()}</span>
             </Link>
             <div className="flex gap-2">
-                <Button variant="ghost" onClick={handleCopy} className="relative transition duration-150 ease-in-out">
+                <Button variant="ghost" onClick={handleCopy} className="relative transition duration-150 ease-in-out cursor-pointer">
                     {copied ? <Check className="text-green-500" /> : <Copy />}
                 </Button>
-                <Button variant="ghost" onClick={downloadImage}>
+                <Button className="cursor-pointer" variant="ghost" onClick={downloadImage}>
                     <Download />
                 </Button>
-                <Button variant="ghost">
-                    <Trash />
+                <Button className="cursor-pointer" variant="ghost" onClick={() => fun(url?._id)}>
+                    {isPending ? <BeatLoader size={5} color="white" /> : <Trash />}
                 </Button>
             </div>
         </div>

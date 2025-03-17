@@ -1,9 +1,10 @@
 import crudService from "@/api/crudService";
+import queryClient from "@/api/queryClientConfig";
 import LinkCard from "@/components/LinkCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { Filter } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -24,9 +25,22 @@ const Dashboard = () => {
         enabled: !!user?._id,
     });
 
+    const { mutate: deleteUrl, isPending: deleteUrlIsPending } = useMutation({
+        mutationFn: (id) => crudService.delete(`/urls/delete-url/${id}`),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries(["userUrls", user?._id]);
+            toast.success(data?.message);
+        },
+        onError: (error) => {
+            console.error(error);
+
+            const errorMessage = error?.response?.data?.message || error?.message || "An error occurred";
+            toast.error(errorMessage);
+        },
+    });
+
     // Extract the array of IDs from URLs
     const urlIds = urls?.data?.map((url) => url?._id) || [];
-    console.log(urlIds);
 
     // Fetch clicks for each ID using `useQueries`
     const clickQueriers = useQueries({
@@ -38,15 +52,16 @@ const Dashboard = () => {
     const clickData = clickQueriers.map((query) => query.data || { data: [] });
     const totalClicks = clickData?.reduce((acc, obj) => acc + (obj?.data?.length || 0), 0);
     const isLoading = clickQueriers?.some((query) => query.isLoading);
-
-    if (isPending || isLoading) return <ClipLoader size={60} color="white" />;
+    
     if (error) {
-        toast.error(error.message || "Failed to fetch click data.");
+        toast.error(error?.response?.data?.message)
     }
-
+    if (isPending || isLoading) return <ClipLoader size={60} color="white" />;
     const filteredUrls = urls?.data.filter((url) => url.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    if (deleteUrlIsPending || isPending) return <ClipLoader size={60} color="white" />;
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 mt-8">
             <div className="grid grid-cols-2 gap-4">
                 <Card>
                     <CardHeader>
@@ -73,9 +88,11 @@ const Dashboard = () => {
                 <Input type="text" placeholder="Filter Links..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 <Filter className="absolute top-2 right-2 p-1" />
             </div>
-            {(filteredUrls || []).map((url, idx) => (
-                <LinkCard key={idx} url={url} />
-            ))}
+            {filteredUrls?.length > 0 ? (
+                (filteredUrls || []).map((url, idx) => <LinkCard key={idx} url={url} fun={deleteUrl} isPending={deleteUrlIsPending} />)
+            ) : (
+                <div className="text-center text-gray-200 text-2xl font-bold p-6">No links found. Create a new link to get started!</div>
+            )}
         </div>
     );
 };
