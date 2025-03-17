@@ -50,7 +50,7 @@ const Header = () => {
                             <DropdownMenuLabel>{`${capitalizeWords(user?.firstName)} ${capitalizeWords(user?.lastName)}`}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                                <LinkIcon /> My Links
+                               <Link className="flex gap-2 items-center justify-center" to={'/dashboard'}> <LinkIcon /> My Links</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="text-red-500" onClick={logOutUser}>
                                 <LogOut className="text-red-500" /> Logout
