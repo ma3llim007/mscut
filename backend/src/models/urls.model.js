@@ -27,7 +27,7 @@ const urlScheme = new Schema(
             type: String,
         },
     },
-    { timeseries: true }
+    { timestamps: true }
 );
 
 export const Url = mongoose.model("Url", urlScheme);
