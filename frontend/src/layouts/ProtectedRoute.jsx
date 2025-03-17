@@ -1,10 +1,11 @@
 import UrlContext from "@/context/UrlContext";
 import { useContext, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const ProtectedRoute = () => {
-    const { user, isAuthenticated } = useContext(UrlContext);
+    const { user, isAuthenticated } = useSelector((state) => state.userAuth);
 
     useEffect(() => {
         if (!user || !isAuthenticated) {

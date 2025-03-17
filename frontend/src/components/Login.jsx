@@ -9,12 +9,12 @@ import { loginValidationSchema } from "@/validation/auth.validation";
 import { useMutation } from "@tanstack/react-query";
 import crudService from "@/api/crudService";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useContext } from "react";
-import UrlContext from "@/context/UrlContext";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { userLogin } from "@/features/userAuthSlice";
 
 const Login = () => {
-    const { userLogin } = useContext(UrlContext);
+    const dispatch = useDispatch();
     const {
         register,
         handleSubmit,
@@ -35,7 +35,7 @@ const Login = () => {
             resetField("password");
         },
         onSuccess: (data) => {
-            userLogin(data?.data);
+            dispatch(userLogin(data?.data));
             navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
             toast.success(data?.message || "Login Successfully");
         },

@@ -1,16 +1,17 @@
-import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LinkIcon, LogOut } from "lucide-react";
-import UrlContext from "@/context/UrlContext";
 import { useMutation } from "@tanstack/react-query";
 import crudService from "@/api/crudService";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogOut } from "@/features/userAuthSlice";
 
 const Header = () => {
-    const { isAuthenticated, userLogout } = useContext(UrlContext);
+    const { isAuthenticated } = useSelector((state) => state.userAuth);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { mutate: logOutUser } = useMutation({
@@ -20,7 +21,7 @@ const Header = () => {
             toast.error(message);
         },
         onSuccess: (data) => {
-            userLogout();
+            dispatch(userLogOut());
             toast.success(data?.message || "Logout Successfully! See You Soon!");
             navigate("/");
         },
@@ -33,13 +34,15 @@ const Header = () => {
             </Link>
             <div>
                 {!isAuthenticated ? (
-                    <Button onClick={() => navigate("/auth")}>Login</Button>
+                    <Button className={"cursor-pointer"} onClick={() => navigate("/auth")}>
+                        Login
+                    </Button>
                 ) : (
                     <DropdownMenu>
                         <DropdownMenuTrigger className="outline-0 overflow-hidden">
                             <Avatar>
                                 <AvatarImage src="https://avatars.githubusercontent.com/u/124599?v=4" />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback>US</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
