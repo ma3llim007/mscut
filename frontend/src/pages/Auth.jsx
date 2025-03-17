@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UrlContext from "@/context/UrlContext";
 import React, { lazy, Suspense, useContext, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 const Login = lazy(() => import("../components/Login"));
@@ -10,7 +10,7 @@ const Auth = () => {
     const [searchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
     const navigate = useNavigate();
-    const { isAuthenticated } = useContext(UrlContext);
+    const { isAuthenticated } = useSelector((state) => state.userAuth);
 
     useEffect(() => {
         if (isAuthenticated) {

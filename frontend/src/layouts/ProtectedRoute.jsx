@@ -1,5 +1,4 @@
-import UrlContext from "@/context/UrlContext";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";

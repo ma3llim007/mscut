@@ -33,6 +33,14 @@ const router = createBrowserRouter([
                             </Suspense>
                         ),
                     },
+                    {
+                        path: "/link/:id",
+                        element: (
+                            <Suspense fallback={<ClipLoader size={60} color="white" />}>
+                                <Link />
+                            </Suspense>
+                        ),
+                    },
                 ],
             },
             {
@@ -40,14 +48,6 @@ const router = createBrowserRouter([
                 element: (
                     <Suspense fallback={<ClipLoader size={60} color="white" />}>
                         <Auth />
-                    </Suspense>
-                ),
-            },
-            {
-                path: "/link/:id",
-                element: (
-                    <Suspense fallback={<ClipLoader size={60} color="white" />}>
-                        <Link />
                     </Suspense>
                 ),
             },

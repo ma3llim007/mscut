@@ -8,9 +8,10 @@ import crudService from "@/api/crudService";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogOut } from "@/features/userAuthSlice";
+import { capitalizeWords } from "@/utils/texts.utils";
 
 const Header = () => {
-    const { isAuthenticated } = useSelector((state) => state.userAuth);
+    const { isAuthenticated, user } = useSelector((state) => state.userAuth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const Header = () => {
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                            <DropdownMenuLabel>Username</DropdownMenuLabel>
+                            <DropdownMenuLabel>{`${capitalizeWords(user?.firstName)} ${capitalizeWords(user?.lastName)}`}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <LinkIcon /> My Links
