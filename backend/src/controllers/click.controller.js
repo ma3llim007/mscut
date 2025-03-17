@@ -1,6 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { ApiError, ApiResponse, asyncHandler } from "../utils/api.utils.js";
 import { Click } from "../models/clicks.model.js";
+import { Url } from "../models/urls.model.js";
 
 const createUrlClicks = asyncHandler(async (req, res) => {
     const { urlId, city, device, country } = req.body;
@@ -11,7 +12,11 @@ const createUrlClicks = asyncHandler(async (req, res) => {
     if (!isValidObjectId(urlId)) {
         return res.status(404).json(new ApiError(404, "Invalid Url Id"));
     }
-
+    const url = await Url.findById(urlId);
+    if (!url) {
+        return res.status(404).json(new ApiError(404, "Url Not Found!"));
+    }
+    
     try {
         await Click.create({
             urlId,
