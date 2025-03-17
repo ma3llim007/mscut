@@ -4,6 +4,8 @@ import { ApiError, ApiResponse, asyncHandler } from "../utils/api.utils.js";
 import { nanoid } from "nanoid";
 import { toDataURL } from "qrcode";
 import { Click } from "../models/clicks.model.js";
+import { UAParser } from "ua-parser-js";
+const parser = new UAParser();
 
 const createUrl = asyncHandler(async (req, res) => {
     const { originalUrl, customUrl, title } = req.body;
@@ -42,8 +44,6 @@ const createUrl = asyncHandler(async (req, res) => {
         });
         return res.status(201).json(new ApiResponse(201, createUrl, "URL Created Successfully"));
     } catch (_error) {
-        console.error(_error);
-
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Generating Url"));
     }
 });
@@ -92,4 +92,49 @@ const deleteUrl = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, {}, "Url Delete Successfully"));
 });
 
-export { getUrlsByUserId, createUrl, deleteUrl };
+const redirectUrl = asyncHandler(async (req, res) => {
+    const { url } = req.params;
+    if (!url) {
+        return res.status(400).json(new ApiError(400, "Url Code Is Required"));
+    }
+    try {
+        const redirectionUrl = await Url.findOne({
+            $or: [{ customUrl: url }, { shortUrl: url }],
+        }).select("originalUrl");
+
+        if (!redirectionUrl) {
+            return res.status(400).json(new ApiError(400, "Url Is Not Found!"));
+        }
+
+        return res.status(200).json(new ApiResponse(200, redirectionUrl, "Url Fetch Successfully"));
+    } catch (_error) {
+        return res.status(500).json(new ApiError(500, "Something Went Wrong! While Redirect Url"));
+    }
+});
+
+const storeClicks = asyncHandler(async (req, res) => {
+    const user = req.user;
+    const { originalUrl } = req.body;
+    if (!user) {
+        return res.status(400).json(new ApiError(400, "User Is Required"));
+    }
+    try {
+        const res = parser.getResult();
+        const device = res.type || "desktop";
+
+        const response = await fetch("https://ipapi.co/json");
+        const { city, country_name } = await response.json();
+
+        await Click.create({
+            urlId: user._id,
+            city,
+            device,
+            country: country_name,
+        });
+        window.location.href = originalUrl;
+    } catch (_error) {
+        return res.status(500).json(new ApiError(500, "Something Went Wrong! While Redirect Url"));
+    }
+});
+
+export { getUrlsByUserId, createUrl, deleteUrl, redirectUrl, storeClicks };
