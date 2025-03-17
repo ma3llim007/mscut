@@ -35,13 +35,15 @@ const createUrl = asyncHandler(async (req, res) => {
         const createUrl = await Url.create({
             originalUrl,
             shortUrl,
-            customUrl: customUrl || null,
+            customUrl: customUrl ? customUrl : undefined,
             userId: user._id,
             title,
             qrCode,
         });
         return res.status(201).json(new ApiResponse(201, createUrl, "URL Created Successfully"));
     } catch (_error) {
+        console.error(_error);
+
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Generating Url"));
     }
 });
@@ -78,7 +80,7 @@ const deleteUrl = asyncHandler(async (req, res) => {
     // Deleting Url Relative Clicks
     try {
         await Click.deleteMany({ urlId });
-    } catch (error) {
+    } catch (_error) {
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Deleting Url Relative Clicks"));
     }
 

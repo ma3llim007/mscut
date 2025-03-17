@@ -1,5 +1,6 @@
 import crudService from "@/api/crudService";
 import queryClient from "@/api/queryClientConfig";
+import CreateLink from "@/components/CreateLink";
 import LinkCard from "@/components/LinkCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,7 @@ const Dashboard = () => {
         error,
         isPending,
     } = useQuery({
-        queryKey: ["userUrls", user?._id],
+        queryKey: ["userUrls"],
         queryFn: () => crudService.get("/urls/get-urls"),
         enabled: !!user?._id,
     });
@@ -28,7 +29,7 @@ const Dashboard = () => {
     const { mutate: deleteUrl, isPending: deleteUrlIsPending } = useMutation({
         mutationFn: (id) => crudService.delete(`/urls/delete-url/${id}`),
         onSuccess: (data) => {
-            queryClient.invalidateQueries(["userUrls", user?._id]);
+            queryClient.invalidateQueries("userUrls");
             toast.success(data?.message);
         },
         onError: (error) => {
@@ -52,9 +53,9 @@ const Dashboard = () => {
     const clickData = clickQueriers.map((query) => query.data || { data: [] });
     const totalClicks = clickData?.reduce((acc, obj) => acc + (obj?.data?.length || 0), 0);
     const isLoading = clickQueriers?.some((query) => query.isLoading);
-    
+
     if (error) {
-        toast.error(error?.response?.data?.message)
+        toast.error(error?.response?.data?.message);
     }
     if (isPending || isLoading) return <ClipLoader size={60} color="white" />;
     const filteredUrls = urls?.data.filter((url) => url.title.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -82,7 +83,7 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between">
                 <h1 className="text-4xl font-extrabold">My Links</h1>
-                <Button>Create Link</Button>
+                <CreateLink />
             </div>
             <div className="relative">
                 <Input type="text" placeholder="Filter Links..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />

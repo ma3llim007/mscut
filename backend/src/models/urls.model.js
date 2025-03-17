@@ -13,6 +13,7 @@ const urlScheme = new Schema(
         customUrl: {
             type: String,
             unique: true,
+            sparse: true, // Allows multiple documents to have `null` values
         },
         userId: {
             type: Schema.Types.ObjectId,
