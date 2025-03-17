@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { lazy, Suspense, useContext, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";

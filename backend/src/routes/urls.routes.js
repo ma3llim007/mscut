@@ -7,7 +7,8 @@ const router = Router();
 router.route("/get-urls").get(authenticateAndVerify, getUrlsByUserId);
 router.route("/create-url").post(authenticateAndVerify, createUrl);
 router.route("/delete-url/:urlId").delete(authenticateAndVerify, deleteUrl);
-router.route("/redirect/:url").get(authenticateAndVerify, redirectUrl);
-router.route("/stock-click/").post(authenticateAndVerify, storeClicks);
+
+router.route("/redirect/:url").get(redirectUrl);
+router.route("/stock-click/:urlId").post(storeClicks);
 
 export default router;

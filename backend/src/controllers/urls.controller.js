@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 import { toDataURL } from "qrcode";
 import { Click } from "../models/clicks.model.js";
 import { UAParser } from "ua-parser-js";
-const parser = new UAParser();
 
 const createUrl = asyncHandler(async (req, res) => {
     const { originalUrl, customUrl, title } = req.body;
@@ -113,25 +112,27 @@ const redirectUrl = asyncHandler(async (req, res) => {
 });
 
 const storeClicks = asyncHandler(async (req, res) => {
-    const user = req.user;
-    const { originalUrl } = req.body;
-    if (!user) {
-        return res.status(400).json(new ApiError(400, "User Is Required"));
+    const { urlId } = req.params;
+    if (!isValidObjectId(urlId)) {
+        return res.status(422).json(new ApiError(422, "Url ID is Required"));
     }
+
     try {
-        const res = parser.getResult();
-        const device = res.type || "desktop";
+        // Detect Device Type
+        const parser = new UAParser(req.headers["user-agent"]);
+        const parserRes = parser.getResult();
+        const device = parserRes .type || "desktop";
 
         const response = await fetch("https://ipapi.co/json");
-        const { city, country_name } = await response.json();
+        const jsonResponse = await response.json();
 
         await Click.create({
-            urlId: user._id,
-            city,
-            device,
-            country: country_name,
+            urlId,
+            city: jsonResponse.city,
+            device: device,
+            country: jsonResponse.country_name,
         });
-        window.location.href = originalUrl;
+        return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
     } catch (_error) {
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Redirect Url"));
     }
