@@ -41,9 +41,6 @@ const clickByUrlId = asyncHandler(async (req, res) => {
     }
 
     const urlClicks = await Click.find({ urlId });
-    if (!urlClicks.length) {
-        return res.status(400).json(new ApiError(400, "Url Click Is Empty."));
-    }
     return res.status(200).json(new ApiResponse(200, urlClicks, "Url Clicks Fetch Successfully"));
 });
 
