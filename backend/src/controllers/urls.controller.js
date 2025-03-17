@@ -53,7 +53,7 @@ const getUrlsByUserId = asyncHandler(async (req, res) => {
         return res.status(400).json(new ApiError(400, "User Is Required"));
     }
     try {
-        const urls = await Url.find({ userId: user._id });
+        const urls = await Url.find({ userId: user._id }).sort({ createdAt: -1 });
         return res.status(200).json(new ApiResponse(200, urls, "Urls Fetch Successfully"));
     } catch (_error) {
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Fetching User URL's"));
@@ -121,7 +121,7 @@ const storeClicks = asyncHandler(async (req, res) => {
         // Detect Device Type
         const parser = new UAParser(req.headers["user-agent"]);
         const parserRes = parser.getResult();
-        const device = parserRes .type || "desktop";
+        const device = parserRes.type || "desktop";
 
         const response = await fetch("https://ipapi.co/json");
         const jsonResponse = await response.json();
