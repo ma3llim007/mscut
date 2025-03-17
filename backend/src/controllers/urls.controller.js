@@ -51,7 +51,7 @@ const getUrlsByUserId = asyncHandler(async (req, res) => {
     }
     try {
         const urls = await Url.find({ userId: user._id });
-        if (urls.length === 0) {
+        if (!urls.length) {
             return res.status(400).json(new ApiError(400, "URL Not Found! User Not Created Any Url Yet!."));
         }
         return res.status(200).json(new ApiResponse(200, urls, "Urls Fetch Successfully"));
