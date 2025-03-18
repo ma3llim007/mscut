@@ -110,7 +110,7 @@ const Signup = () => {
                         />
                         {errors?.confirmPassword?.message ? <ErrorMessage error={errors?.confirmPassword?.message} /> : null}
                     </div>
-                    <Button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 transition text-white rounded-md flex items-center justify-center">
+                    <Button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 transition text-white rounded-md flex items-center justify-center cursor-pointer">
                         {isPending ? <BeatLoader size={10} color="#ffffff" /> : "Signup"}
                     </Button>
                 </form>

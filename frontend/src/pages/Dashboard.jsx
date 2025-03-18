@@ -62,20 +62,20 @@ const Dashboard = () => {
     return (
         <div className="flex flex-col gap-8 mt-8">
             <div className="grid grid-cols-2 gap-4">
-                <Card>
+                <Card className="shadow-lg">
                     <CardHeader>
-                        <CardTitle>Links Created</CardTitle>
+                        <CardTitle className="text-lg font-semibold">Links Created</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>{urlIds.length || 0}</p>
+                        <p className="text-2xl font-bold">{urlIds.length || 0}</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="shadow-lg">
                     <CardHeader>
-                        <CardTitle>Total Clicks</CardTitle>
+                        <CardTitle className="text-lg font-semibold">Total Clicks</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>{totalClicks}</p>
+                        <p className="text-2xl font-bold">{totalClicks}</p>
                     </CardContent>
                 </Card>
             </div>

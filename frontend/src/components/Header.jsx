@@ -42,7 +42,7 @@ const Header = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger className="outline-0 overflow-hidden">
                             <Avatar>
-                                <AvatarImage src="https://avatars.githubusercontent.com/u/124599?v=4" />
+                                <AvatarImage src="/userSvg.svg" />
                                 <AvatarFallback>US</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>

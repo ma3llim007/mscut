@@ -24,6 +24,7 @@ const CreateLink = () => {
         formState: { errors },
         setError,
         resetField,
+        reset,
     } = useForm({
         mode: "onChange",
         resolver: yupResolver(createLinkValidationSchema),
@@ -32,7 +33,7 @@ const CreateLink = () => {
         },
     });
 
-    const { mutate,isPending } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: (data) => crudService.post("urls/create-url", data),
         onError: (error) => {
             const message = error?.response?.data?.message || error?.message || "An Unexpected Error Occurred.";
@@ -44,6 +45,7 @@ const CreateLink = () => {
             navigate(`/link/${link}`);
             toast.success(data?.message || "Link Created Successfully");
             queryClient.invalidateQueries("userUrls");
+            reset();
         },
     });
     return (
