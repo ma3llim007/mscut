@@ -19,7 +19,7 @@ const Auth = () => {
     }, [isAuthenticated]);
 
     return (
-        <div className="mt-10 flex flex-col items-center gap-10">
+        <div className="flex flex-col items-center gap-10">
             {longLink ? "Hold Up! Let's Login First..." : null}
             <h1 className="text-5xl font-extrabold">Login / Signup</h1>
             <Tabs defaultValue="login" className="w-[400px]">

@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     if (deleteUrlIsPending || isPending) return <ClipLoader size={60} color="white" />;
     return (
-        <div className="flex flex-col gap-8 mt-8">
+        <div className="flex flex-col gap-8">
             <div className="grid grid-cols-2 gap-4">
                 <Card className="shadow-lg">
                     <CardHeader>
