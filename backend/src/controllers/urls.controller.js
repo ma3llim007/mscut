@@ -26,7 +26,7 @@ const createUrl = asyncHandler(async (req, res) => {
         if (userUrlCount >= 15) {
             return res.status(403).json(new ApiError(403, "You Can Only Create Up To 15 Short URLs"));
         }
-        
+
         // Check If the custom URL Already Exists
         if (customUrl) {
             const existingCustomUrl = await Url.findOne({ customUrl });
@@ -144,7 +144,7 @@ const storeClicks = asyncHandler(async (req, res) => {
     }
 });
 
-const urlByUrlId = asyncHandler(async (req, res) => {
+const urlByUrlIdWithClicks = asyncHandler(async (req, res) => {
     const { urlId } = req.params;
     if (!urlId) {
         return res.status(422).json(new ApiError(422, "Url ID is Required"));
@@ -167,4 +167,73 @@ const urlByUrlId = asyncHandler(async (req, res) => {
     }
 });
 
-export { getUrlsByUserId, createUrl, deleteUrl, redirectUrl, storeClicks, urlByUrlId };
+const urlByUrlId = asyncHandler(async (req, res) => {
+    const { urlId } = req.params;
+    if (!urlId) {
+        return res.status(422).json(new ApiError(422, "Url ID is Required"));
+    }
+    if (!isValidObjectId(urlId)) {
+        return res.status(404).json(new ApiError(404, "Invalid Url ID"));
+    }
+
+    try {
+        // Finding the Url
+        const url = await Url.findById(urlId).select("originalUrl customUrl title");
+        if (!url) {
+            return res.status(404).json(new ApiError(404, "Url Not Found"));
+        }
+
+        return res.status(200).json(new ApiResponse(200, url, "Url Fetched Successfully"));
+    } catch (_error) {
+        return res.status(500).json(new ApiError(500, "Something Went Wrong! While Fetching Url With Clicks"));
+    }
+});
+
+const editUrl = asyncHandler(async (req, res) => {
+    const { urlId } = req.params;
+    const { originalUrl, customUrl, title } = req.body;
+    const user = req.user;
+
+    if (!user) {
+        return res.status(400).json(new ApiError(400, "User is required"));
+    }
+    if (!urlId || !isValidObjectId(urlId)) {
+        return res.status(422).json(new ApiError(422, "Valid URL ID is required"));
+    }
+    if (!originalUrl?.trim() || !title?.trim()) {
+        return res.status(422).json(new ApiError(422, "Original URL and title are required"));
+    }
+
+    try {
+        // Find URL and check ownership
+        const url = await Url.findOne({ _id: urlId, userId: user._id });
+        if (!url) {
+            return res.status(404).json(new ApiError(404, "URL Not Found Or Unauthorized"));
+        }
+
+        // Check if the custom URL already exists (excluding the current one)
+        if (customUrl && customUrl !== url.customUrl) {
+            const existingCustomUrl = await Url.findOne({ customUrl });
+            if (existingCustomUrl) {
+                return res.status(409).json(new ApiError(409, "Custom URL Already Exists"));
+            }
+        }
+
+        // Update fields
+        url.originalUrl = originalUrl;
+        url.title = title;
+        if (customUrl) url.customUrl = customUrl;
+
+        // Regenerate QR Code (if URL is changed)
+        const fullShortUrl = `${process.env.FRONTEND_HOST}/${customUrl || url.shortUrl}`;
+        url.qrCode = await toDataURL(fullShortUrl);
+
+        await url.save();
+
+        return res.status(200).json(new ApiResponse(200, url, "URL updated successfully"));
+    } catch (_error) {
+        return res.status(500).json(new ApiError(500, "Something went wrong while updating the URL"));
+    }
+});
+
+export { getUrlsByUserId, createUrl, deleteUrl, redirectUrl, storeClicks, urlByUrlIdWithClicks, editUrl, urlByUrlId };

@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Check, Copy, Download, Trash } from "lucide-react";
+import { Check, Copy, Download, Edit, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { BeatLoader } from "react-spinners";
+import EditLink from "./EditLink";
 
 const LinkCard = ({ url, fun, isPending }) => {
     const [copied, setCopied] = useState(false);
-
+    
     const downloadImage = () => {
         const imageUrl = url?.qrCode;
         const fileName = url?.title;
@@ -25,11 +26,11 @@ const LinkCard = ({ url, fun, isPending }) => {
         try {
             await navigator.clipboard.writeText(`${import.meta.env.VITE_FRONTEND_HOST}/${url?.shortUrl}`);
             setCopied(true);
-            toast.success("Copied to clipboard!");
+            toast.success("Copied To Clipboard!");
 
             setTimeout(() => setCopied(false), 2000);
         } catch (error) {
-            toast.error("Failed to copy!");
+            toast.error("Failed To Copy!");
         }
     };
 
@@ -52,6 +53,8 @@ const LinkCard = ({ url, fun, isPending }) => {
                 <Button className="cursor-pointer" variant="ghost" onClick={() => fun(url?._id)}>
                     {isPending ? <BeatLoader size={5} color="white" /> : <Trash />}
                 </Button>
+                {/* {isPending ? <BeatLoader size={5} color="white" /> : <Edit />} */}
+                <EditLink urlId={url?._id} />
             </div>
         </div>
     );
