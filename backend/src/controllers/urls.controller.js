@@ -130,25 +130,33 @@ const storeClicks = asyncHandler(async (req, res) => {
         const parserRes = parser.getResult();
         const device = parserRes?.device?.type || "desktop";
         // Get Location Data (Handle API Failure)
-        let city = "Unknown";
-        let country = "Unknown";
+        let city = null;
+        let country = null;
+
         try {
             const response = await fetch("https://ipapi.co/json");
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                city = jsonResponse.city || "Unknown";
-                country = jsonResponse.country_name || "Unknown";
+            if (!response.ok) throw new Error(`IP API Error: ${response.status}`);
+
+            const jsonResponse = await response.json();
+
+            // Ensure only valid data is stored
+            if (jsonResponse.city && jsonResponse.country_name && jsonResponse.region) {
+                city = jsonResponse.city;
+                country = jsonResponse.country_name;
+            } else {
+                throw new Error("Incomplete location data received.");
             }
         } catch (error) {
             console.warn("IP Lookup Failed:", error.message);
+            return res.status(500).json(new ApiError(500, "Could Not Retrieve Location Data"));
         }
 
-        await Click.create({
-            urlId,
-            city,
-            device: device,
-            country,
-        });
+        // If location data is missing, do NOT store in the database
+        if (!city || !country) {
+            return res.status(400).json(new ApiError(400, "Location Data Is Required"));
+        }
+
+        await Click.create({ urlId, city, device, country });
         return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
     } catch (_error) {
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Redirect Url"));
