@@ -31,7 +31,7 @@ const Header = () => {
     return (
         <nav className="py-4 flex justify-between items-center container mx-auto px-4 sm:px-6 lg:px-8">
             <Link to={"/"}>
-                <img src="/vite.svg" className="h-12" alt="Logo Image" />
+                <img src="/logo.svg" className="h-12" alt="Logo Image" />
             </Link>
             <div>
                 {!isAuthenticated ? (

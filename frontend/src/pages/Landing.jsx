@@ -29,7 +29,7 @@ const LandingPage = () => {
             <img src="/banner.jpeg" alt="Banner Image" className="w-full my-11 md:px-11" />
             <Accordion type="multiple" collapsible="true" className="w-full md:px-11">
                 <AccordionItem value="item-1" key="item-1">
-                    <AccordionTrigger className="text-xl">How does the [Website] URL shortener works?</AccordionTrigger>
+                    <AccordionTrigger className="text-xl">How does the MsCut URL shortener works?</AccordionTrigger>
                     <AccordionContent className="text-lg">
                         When you enter a long URL, our system generates a shorter version of that URL. This shortened URL redirects to the original long URL when accessed.
                     </AccordionContent>
