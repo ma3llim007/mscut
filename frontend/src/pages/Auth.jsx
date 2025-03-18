@@ -24,8 +24,12 @@ const Auth = () => {
             <h1 className="text-5xl font-extrabold">Login / Signup</h1>
             <Tabs defaultValue="login" className="w-[400px]">
                 <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="login">Login</TabsTrigger>
-                    <TabsTrigger value="signup">Signup</TabsTrigger>
+                    <TabsTrigger className="cursor-pointer" value="login">
+                        Login
+                    </TabsTrigger>
+                    <TabsTrigger className="cursor-pointer" value="signup">
+                        Signup
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
                     <Suspense fallback={<ClipLoader size={60} color="white" />}>
