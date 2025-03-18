@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check, Copy, Download, LinkIcon, Trash } from "lucide-react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader, ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import DeviceStats from "./DeviceStats";
@@ -14,6 +14,7 @@ import queryClient from "@/api/queryClientConfig";
 const Link = () => {
     const [copied, setCopied] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
     const { data, error, isLoading } = useQuery({
         queryKey: ["links", id],
         queryFn: () => crudService.get(`/urls/url/${id}`),
@@ -59,6 +60,7 @@ const Link = () => {
         onSuccess: (data) => {
             queryClient.invalidateQueries("userUrls");
             toast.success(data?.message);
+            navigate("/dashboard");
         },
         onError: (error) => {
             const errorMessage = error?.response?.data?.message || error?.message || "An error occurred";
@@ -71,7 +73,7 @@ const Link = () => {
         <div className="flex flex-col gap-8 sm:flex-row justify-between">
             <div className="flex flex-col items-start gap-8 rounded-lg sm:w-2/5">
                 <span className="text-6xl font-extrabold hover:underline cursor-pointer">{url?.title}</span>
-                <a href={`https://trimrr.in/${link}`} target="_blank" className="text-3xl sm:text-4xl text-blue-500 font-bold hover:underline cursor-pointer">
+                <a href={`${import.meta.env.VITE_FRONTEND_HOST}/${link}`} target="_blank" className="text-3xl sm:text-4xl text-blue-500 font-bold hover:underline cursor-pointer">
                     {`${import.meta.env.VITE_FRONTEND_HOST}/${link}`}
                 </a>
                 <a href={url?.originalUrl} target="_blank" className="flex items-center gap-1 hover:underline cursor-pointer">

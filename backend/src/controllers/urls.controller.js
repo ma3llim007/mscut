@@ -125,18 +125,29 @@ const storeClicks = asyncHandler(async (req, res) => {
 
     try {
         // Detect Device Type
-        const parser = new UAParser(req.headers["user-agent"]);
+        const userAgent = req.headers["user-agent"] || "";
+        const parser = new UAParser(userAgent);
         const parserRes = parser.getResult();
-        const device = parserRes.type || "desktop";
-
-        const response = await fetch("https://ipapi.co/json");
-        const jsonResponse = await response.json();
+        const device = parserRes?.device?.type || "desktop";
+        // Get Location Data (Handle API Failure)
+        let city = "Unknown";
+        let country = "Unknown";
+        try {
+            const response = await fetch("https://ipapi.co/json");
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                city = jsonResponse.city || "Unknown";
+                country = jsonResponse.country_name || "Unknown";
+            }
+        } catch (error) {
+            console.warn("IP Lookup Failed:", error.message);
+        }
 
         await Click.create({
             urlId,
-            city: jsonResponse.city,
+            city,
             device: device,
-            country: jsonResponse.country_name,
+            country,
         });
         return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
     } catch (_error) {
@@ -219,10 +230,16 @@ const editUrl = asyncHandler(async (req, res) => {
             }
         }
 
+        // Remove custom URL if it's empty
+        if (customUrl === "" || customUrl === null) {
+            url.customUrl = undefined;
+        } else if (customUrl) {
+            url.customUrl = customUrl;
+        }
+
         // Update fields
         url.originalUrl = originalUrl;
         url.title = title;
-        if (customUrl) url.customUrl = customUrl;
 
         // Regenerate QR Code (if URL is changed)
         const fullShortUrl = `${process.env.FRONTEND_HOST}/${customUrl || url.shortUrl}`;

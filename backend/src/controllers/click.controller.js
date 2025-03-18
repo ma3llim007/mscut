@@ -16,7 +16,7 @@ const createUrlClicks = asyncHandler(async (req, res) => {
     if (!url) {
         return res.status(404).json(new ApiError(404, "Url Not Found!"));
     }
-    
+
     try {
         await Click.create({
             urlId,

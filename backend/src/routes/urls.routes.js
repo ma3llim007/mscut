@@ -9,7 +9,7 @@ router.route("/url/:urlId").get(authenticateAndVerify, urlByUrlIdWithClicks);
 router.route("/url-details/:urlId").get(authenticateAndVerify, urlByUrlId);
 router.route("/create-url").post(authenticateAndVerify, createUrl);
 router.route("/delete-url/:urlId").delete(authenticateAndVerify, deleteUrl);
-router.route("/edit-url/:urlId").delete(authenticateAndVerify, editUrl);
+router.route("/edit-url/:urlId").patch(authenticateAndVerify, editUrl);
 
 router.route("/redirect/:url").get(redirectUrl);
 router.route("/stock-click/:urlId").post(storeClicks);

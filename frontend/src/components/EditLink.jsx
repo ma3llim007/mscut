@@ -18,8 +18,8 @@ import { useEffect, useState } from "react";
 const EditLink = ({ urlId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
-    const [serachParams, setSearchParams] = useSearchParams();
-    const longLink = serachParams.get("createNew");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const longLink = searchParams.get("createNew");
 
     const {
         register,
@@ -55,7 +55,7 @@ const EditLink = ({ urlId }) => {
     }, [data?.data]);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (data) => crudService.post("urls/create-url", data),
+        mutationFn: (data) => crudService.patch(`urls/edit-url/${urlId}`, data),
         onError: (error) => {
             const message = error?.response?.data?.message || error?.message || "An Unexpected Error Occurred.";
             setError("root", { message });
@@ -76,10 +76,14 @@ const EditLink = ({ urlId }) => {
     return (
         <div>
             <Dialog
-                defaultOpen={longLink}
+                open={isModalOpen}
                 onOpenChange={(open) => {
                     setIsModalOpen(open);
-                    if (open) refetch();
+                    if (open) {
+                        refetch();
+                    } else {
+                        queryClient.cancelQueries(["editLink", urlId]);
+                    }
                 }}
             >
                 <DialogTrigger asChild>
@@ -97,7 +101,7 @@ const EditLink = ({ urlId }) => {
                             <p className="text-white font-bold text-sm">{errors.root.message}</p>
                         </div>
                     )}
-                    <form onSubmit={handleSubmit(mutate)} className="space-y-3">
+                    <form onSubmit={handleSubmit((formData) => mutate(formData))} className="space-y-3">
                         <div>
                             <Input
                                 {...register("title")}

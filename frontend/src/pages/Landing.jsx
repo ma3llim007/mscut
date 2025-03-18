@@ -26,20 +26,22 @@ const LandingPage = () => {
                     Shorten!
                 </Button>
             </form>
-            <img src="/banner.jpeg" alt="Banner Image" className="w-full my-11 md:px-11" />
+            <div className="w-full my-11 md:px-11">
+                <img src="/banner.svg" alt="Banner Image" className="w-full h-full bject-cover rounded-lg" />
+            </div>
             <Accordion type="multiple" collapsible="true" className="w-full md:px-11">
                 <AccordionItem value="item-1" key="item-1">
-                    <AccordionTrigger className="text-xl">How does the MsCut URL shortener works?</AccordionTrigger>
+                    <AccordionTrigger className="text-xl cursor-pointer">How does the MsCut URL shortener works?</AccordionTrigger>
                     <AccordionContent className="text-lg">
                         When you enter a long URL, our system generates a shorter version of that URL. This shortened URL redirects to the original long URL when accessed.
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2" key="item-2">
-                    <AccordionTrigger className="text-xl">Do I need an account to use the app?</AccordionTrigger>
+                    <AccordionTrigger className="text-xl cursor-pointer">Do I need an account to use the app?</AccordionTrigger>
                     <AccordionContent className="text-lg">Yes. Creating an account allows you to manage your URLs, view analytics, and customize your short URLs.</AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3" key="item-3">
-                    <AccordionTrigger className="text-xl">What analytics are available for my shortened URLs?</AccordionTrigger>
+                    <AccordionTrigger className="text-xl cursor-pointer">What analytics are available for my shortened URLs?</AccordionTrigger>
                     <AccordionContent className="text-lg">
                         You can view the number of clicks, geolocation data of the clicks and device types (mobile/desktop) for each of your shortened URLs.
                     </AccordionContent>
