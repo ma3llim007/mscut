@@ -21,6 +21,12 @@ const createUrl = asyncHandler(async (req, res) => {
     let fullShortUrl = `${process.env.FRONTEND_HOST}/${shortUrl}`;
 
     try {
+        // Check User's Url Count
+        const userUrlCount = await Url.countDocuments({ userId: user._id });
+        if (userUrlCount >= 15) {
+            return res.status(403).json(new ApiError(403, "You Can Only Create Up To 15 Short URLs"));
+        }
+        
         // Check If the custom URL Already Exists
         if (customUrl) {
             const existingCustomUrl = await Url.findOne({ customUrl });
