@@ -138,4 +138,27 @@ const storeClicks = asyncHandler(async (req, res) => {
     }
 });
 
-export { getUrlsByUserId, createUrl, deleteUrl, redirectUrl, storeClicks };
+const urlByUrlId = asyncHandler(async (req, res) => {
+    const { urlId } = req.params;
+    if (!urlId) {
+        return res.status(422).json(new ApiError(422, "Url ID is Required"));
+    }
+    if (!isValidObjectId(urlId)) {
+        return res.status(404).json(new ApiError(404, "Invalid Url ID"));
+    }
+
+    try {
+        // Finding the Url
+        const url = await Url.findById(urlId);
+        if (!url) {
+            return res.status(404).json(new ApiError(404, "Url Not Found"));
+        }
+        const clicks = await Click.find({ urlId: url._id });
+
+        return res.status(200).json(new ApiResponse(200, { url, clicks: clicks?.length ? clicks : [] }, "Url And Clicks Fetched Successfully"));
+    } catch (_error) {
+        return res.status(500).json(new ApiError(500, "Something Went Wrong! While Fetching Url With Clicks"));
+    }
+});
+
+export { getUrlsByUserId, createUrl, deleteUrl, redirectUrl, storeClicks, urlByUrlId };
