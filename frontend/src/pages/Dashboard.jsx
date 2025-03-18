@@ -33,8 +33,6 @@ const Dashboard = () => {
             toast.success(data?.message);
         },
         onError: (error) => {
-            console.error(error);
-
             const errorMessage = error?.response?.data?.message || error?.message || "An error occurred";
             toast.error(errorMessage);
         },
