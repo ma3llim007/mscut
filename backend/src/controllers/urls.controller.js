@@ -138,7 +138,8 @@ const storeClicks = asyncHandler(async (req, res) => {
         const parser = new UAParser(userAgent);
         const parserRes = parser.getResult();
         const device = parserRes?.device?.type || "desktop";
-
+        console.log(userIP);
+        
         const { city, country } = await getLocationFromId(userIP);
         await Click.create({ urlId, city, device, country });
 
