@@ -134,13 +134,13 @@ const storeClicks = asyncHandler(async (req, res) => {
     try {
         // Detect Device Type
         const userAgent = req.headers["user-agent"] || "";
-        const userIP = req.headers["x-forwarded-for"] || req.socket.remoteAddress || req.ip || req._peername.address;
+        const userIPRaw = req.headers["x-forwarded-for"] || req.socket.remoteAddress || req.ip || req._peername?.address;
+        const userIP = Array.isArray(userIPRaw) ? userIPRaw[0] : userIPRaw?.split(",")[0].trim();
         const parser = new UAParser(userAgent);
         const parserRes = parser.getResult();
-        const device = parserRes?.device?.type || "desktop";
-        console.log(userIP[0]);
-        
-        const { city, country } = await getLocationFromId(userIP[0]);
+        const device = parserRes?.type || "desktop";
+
+        const { city, country } = await getLocationFromId(userIP);
         await Click.create({ urlId, city, device, country });
 
         return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
