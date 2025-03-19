@@ -138,9 +138,9 @@ const storeClicks = asyncHandler(async (req, res) => {
         const parser = new UAParser(userAgent);
         const parserRes = parser.getResult();
         const device = parserRes?.device?.type || "desktop";
-        console.log(userIP);
+        console.log(userIP[0]);
         
-        const { city, country } = await getLocationFromId(userIP);
+        const { city, country } = await getLocationFromId(userIP[0]);
         await Click.create({ urlId, city, device, country });
 
         return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
