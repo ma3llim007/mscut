@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import { toDataURL } from "qrcode";
 import { Click } from "../models/clicks.model.js";
 import { UAParser } from "ua-parser-js";
+import axios from "axios";
 
 const createUrl = asyncHandler(async (req, res) => {
     const { originalUrl, customUrl, title } = req.body;
@@ -117,6 +118,13 @@ const redirectUrl = asyncHandler(async (req, res) => {
     }
 });
 
+const getLocationFromId = async (ip) => {
+    const { data } = await axios.get(`http://ip-api.com/json/${ip}`);
+
+    if (data.status === "fail") throw new Error("Invalid IP");
+    return { city: data.city, country: data.country };
+};
+
 const storeClicks = asyncHandler(async (req, res) => {
     const { urlId } = req.params;
     if (!isValidObjectId(urlId)) {
@@ -126,37 +134,14 @@ const storeClicks = asyncHandler(async (req, res) => {
     try {
         // Detect Device Type
         const userAgent = req.headers["user-agent"] || "";
+        const userIP = req.headers["x-forwarded-for"] || req.socket.remoteAddress || req.ip || req._peername.address;
         const parser = new UAParser(userAgent);
         const parserRes = parser.getResult();
         const device = parserRes?.device?.type || "desktop";
-        // Get Location Data (Handle API Failure)
-        let city = null;
-        let country = null;
 
-        try {
-            const response = await fetch("https://ipapi.co/json");
-            if (!response.ok) throw new Error(`IP API Error: ${response.status}`);
-
-            const jsonResponse = await response.json();
-
-            // Ensure only valid data is stored
-            if (jsonResponse.city && jsonResponse.country_name && jsonResponse.region) {
-                city = jsonResponse.city;
-                country = jsonResponse.country_name;
-            } else {
-                throw new Error("Incomplete location data received.");
-            }
-        } catch (error) {
-            console.warn("IP Lookup Failed:", error.message);
-            return res.status(500).json(new ApiError(500, "Could Not Retrieve Location Data"));
-        }
-
-        // If location data is missing, do NOT store in the database
-        if (!city || !country) {
-            return res.status(400).json(new ApiError(400, "Location Data Is Required"));
-        }
-
+        const { city, country } = await getLocationFromId(userIP);
         await Click.create({ urlId, city, device, country });
+
         return res.status(200).json(new ApiResponse(200, {}, "redirecting....."));
     } catch (_error) {
         return res.status(500).json(new ApiError(500, "Something Went Wrong! While Redirect Url"));
